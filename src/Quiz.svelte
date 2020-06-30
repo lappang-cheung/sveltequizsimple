@@ -14,12 +14,21 @@
 
     const resetQuiz = () => {
         score = 0
+        activeQuestion = 0
         quiz = getQuiz()
     }
 
     const addToScore = () => {
         score = score + 1
     }
+
+    // Reactive Statement
+    $: if  (score > 9) {
+        alert('You won!')
+        resetQuiz()
+    }
+
+    $: questionNumber = activeQuestion + 1
 
     let quiz = getQuiz(),
         activeQuestion = 0,
@@ -36,7 +45,7 @@
     <button on:click={resetQuiz}>Start New Quiz</button>
 
     <h3>Your score is {score}</h3>
-    <h4>Question #{activeQuestion + 1}</h4>
+    <h4>Question #{questionNumber}</h4>
 
     {#await quiz}
         Loading ...
