@@ -1,5 +1,7 @@
 <script>
-    export let question 
+    export let question, 
+               nextQuestion,
+               addToScore 
 
     let answers = question.incorrect_answers
         .map(answer => {
@@ -24,8 +26,14 @@
     }
 
     const checkQuestion = (correct) => {
-        isAnswered = true
-        isCorrect = correct
+        if(!isAnswered) {
+            isAnswered = true
+            isCorrect = correct
+
+            if(correct) {
+                addToScore()
+            }
+        }
     }
 
     shuffle(allAnswers)
@@ -36,13 +44,13 @@
     {@html question.question}
 </h3>
 {#if isAnswered}
-    <h4>
+    <h5>
         {#if isCorrect }
             You got it right
         {:else}
             You goofed
         {/if}
-    </h4>
+    </h5>
 {/if}
 
 {#each allAnswers as answer}
@@ -50,3 +58,8 @@
         {@html answer.answer}
     </button>
 {/each}
+{#if isAnswered}
+    <div>
+        <button on:click={nextQuestion}>Next Question</button>
+    </div>
+{/if}
