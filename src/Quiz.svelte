@@ -1,6 +1,20 @@
 <script>
     import { fly } from 'svelte/transition'
+    import { onMount, beforeUpdate, afterUpdate, onDestroy } from 'svelte'
     import Question from './Question.svelte'
+    import Modal from './Modal.svelte'
+
+    onMount(() => {
+        console.log("I mounted")
+    })
+
+    beforeUpdate(() => {
+        console.log("before update")
+    })
+
+    afterUpdate(() => {
+        console.log("after update")
+    })
 
     const getQuiz = async() => {
         const res = await fetch('https://opentdb.com/api.php?amount=10')
@@ -13,6 +27,7 @@
     }
 
     const resetQuiz = () => {
+        isModalOpen = false
         score = 0
         activeQuestion = 0
         quiz = getQuiz()
@@ -23,16 +38,16 @@
     }
 
     // Reactive Statement
-    $: if  (score > 9) {
-        alert('You won!')
-        resetQuiz()
+    $: if (score > 0) {
+        isModalOpen = true
     }
 
     $: questionNumber = activeQuestion + 1
 
     let quiz = getQuiz(),
         activeQuestion = 0,
-        score = 0
+        score = 0,
+        isModalOpen = false
 </script>
 
 <style>
@@ -61,3 +76,11 @@
         <!-- promise was rejected -->
     {/await}
 </div>
+
+{#if isModalOpen}
+    <Modal on:close={resetQuiz}>
+        <h2>You won!</h2>
+        <p>Congratulations</p>
+        <button on:click={resetQuiz}>Start Over</button>
+    </Modal>
+{/if}
